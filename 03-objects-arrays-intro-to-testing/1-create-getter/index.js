@@ -22,4 +22,4 @@ export function createGetter(path) {
   };
 
   return walk;
-};
+}

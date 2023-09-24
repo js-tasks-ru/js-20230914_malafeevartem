@@ -4,6 +4,14 @@
  * @param {...string} fields - the properties paths to omit
  * @returns {object} - returns the new object
  */
-export const omit = (obj, ...fields) => Object
-    .entries(obj)
-    .reduce((values, [key, value]) => !fields.includes(key) ? { ...values, [key]: value } : values, {});
+export const omit = (obj, ...fields) => {
+  const result = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (!fields.includes(key)) {
+      result[key] = value;
+    }
+  }
+
+  return result;
+};

@@ -5,7 +5,7 @@
  */
 export function invertObj(obj) {
   if (!obj) {
-    return undefined;
+    return;
   }
 
   const currentObject = {};

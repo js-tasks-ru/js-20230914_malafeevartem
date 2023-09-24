@@ -12,7 +12,7 @@ export function createGetter(path) {
           return iter(currentValue[property], properties);
         }
 
-        return undefined;
+        return;
       }
 
       return currentValue;

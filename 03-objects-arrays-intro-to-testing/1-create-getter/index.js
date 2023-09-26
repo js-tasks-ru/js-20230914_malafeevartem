@@ -7,15 +7,13 @@ export function createGetter(path) {
   const properties = path.split('.');
   const walk = (object) => {
     const iter = (currentValue, [property, ...properties]) => {
-      if (property) {
-        if (currentValue.hasOwnProperty(property)) {
-          return iter(currentValue[property], properties);
-        }
-
-        return;
+      if (!property) {
+        return currentValue;
       }
 
-      return currentValue;
+      if (currentValue.hasOwnProperty(property)) {
+        return iter(currentValue[property], properties);
+      }
     };
 
     return iter(object, properties);

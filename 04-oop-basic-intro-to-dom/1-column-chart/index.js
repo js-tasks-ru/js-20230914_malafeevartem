@@ -1,18 +1,23 @@
+const defaultProperties = {
+  data: [],
+  label: null,
+  value: null,
+  link: null,
+  formatHeading: data => data,
+};
+
 export default class ColumnChart {
-  constructor({
-    data = [],
-    label = null,
-    value = null,
-    link = null,
-    formatHeading = null,
-  } = {}) {
-    this.data = data,
-    this.label = label,
-    this.value = value,
-    this.link = link,
-    this.formatHeading = formatHeading,
-    this.chartHeight = 50;
-    this.element = this.createChart();
+  chartHeight = 50;
+  element;
+
+  constructor(properties = {}) {
+    properties = { ...defaultProperties, ...properties };
+    this.data = properties.data;
+    this.label = properties.label;
+    this.value = properties.value;
+    this.link = properties.link;
+    this.formatHeading = properties.formatHeading;
+    this.createChartElement();
   }
 
   getLabel() {
@@ -41,12 +46,10 @@ export default class ColumnChart {
 
   getNormalizedValue() {
     const currentValue = new Intl.NumberFormat('en-EN').format(this.getValue());
-    return (this.getFormatHeading())
-      ? this.getFormatHeading()(currentValue)
-      : currentValue;
+    return this.getFormatHeading()(currentValue);
   }
 
-  createChart() {
+  createChartElement() {
     const chartElement = document.createElement('div');
     chartElement.classList.add('column-chart', 'column-chart_loading');
     chartElement.setAttribute('style', `--chart-height: ${this.chartHeight}`);
@@ -56,7 +59,7 @@ export default class ColumnChart {
       chartElement.classList.remove('column-chart_loading');
     }
 
-    return chartElement;
+    this.element = chartElement;
   }
 
   getTemplate() {
@@ -115,7 +118,7 @@ export default class ColumnChart {
   }
 
   update() {
-    const body = document.querySelector('div[data-element="body"]');
+    const body = this.element.querySelector('[data-element="body"]');
     body.innerHTML = this.getGraphTemplate();
   }
 }

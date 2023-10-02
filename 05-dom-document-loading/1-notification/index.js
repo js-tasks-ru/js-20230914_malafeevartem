@@ -63,25 +63,27 @@ export default class NotificationMessage {
       this.element.remove();
     }
 
-    reset() {
+    resetActive() {
       this.remove();
-      clearTimeout(NotificationMessage.activeNotification?.timeoutID);
-      NotificationMessage.activeNotification = null;
+        NotificationMessage.activeNotification?.element.remove();
+        clearTimeout(NotificationMessage.activeNotification?.timeoutID);
+        NotificationMessage.activeNotification = null;
     }
 
     destroy() {
-      this.reset();
+      this.remove();
+      this.resetActive();
     }
 
     show(target = document.body) {
       if (NotificationMessage.activeNotification) {
-        this.reset();
+        this.resetActive();
       }
 
       NotificationMessage.activeNotification = {
         element: this.element,
         timeoutID: setTimeout(() => {
-          this.reset();
+          this.resetActive();
         }, this.duration),
       };
 

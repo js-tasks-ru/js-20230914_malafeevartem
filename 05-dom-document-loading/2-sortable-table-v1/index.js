@@ -40,7 +40,7 @@ export default class SortableTable {
 
     table.innerHTML = template;
     const element = table.firstElementChild;
-    this.subElements = { body: element.querySelector('[data-element=body]') }
+    this.subElements = { body: element.querySelector('[data-element=body]') };
 
     return element;
   }
@@ -123,25 +123,25 @@ export default class SortableTable {
     const { id: property, sortType } = this.getConfigure(field);
 
     switch (sortType) {
-      case 'number': {
-        this.sortNumber(property, order);
-        break;
-      }
+    case 'number': {
+      this.sortNumber(property, order);
+      break;
+    }
 
-      case 'string': {
-        this.sortString(property, order);
-        break;
-      }
+    case 'string': {
+      this.sortString(property, order);
+      break;
+    }
 
-      default:
-        throw new Error('sortType not found!');
+    default:
+      throw new Error('sortType not found!');
     }
 
     this.sortingProperty = property;
     this.sortingOrder = order;
 
     this.update();
-  };
+  }
 
   sortNumber(property, order) {
     this.data

@@ -36,7 +36,6 @@
       title: 'Image',
       sortable: false,
       template: (data = []) => {
-        console.log(data[0]?.url || 'a');
         return `
           <div class="sortable-table__cell">
             <img class="sortable-table-image" alt="Image" src="${data[0]?.url || 'https://via.placeholder.com/32'}">

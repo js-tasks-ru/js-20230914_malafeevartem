@@ -5,7 +5,7 @@ export default class SortableTable {
   subElements = null;
 
   constructor(headerConfig = [], data = []) {
-    this.headerConfig = headerConfig;
+    this.headerConfig = [...headerConfig];
     this.data = [...data];
     this.element = this.createTableElement();
     this.subElement = this.getSubElements();

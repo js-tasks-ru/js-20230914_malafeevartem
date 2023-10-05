@@ -186,7 +186,7 @@ export default class SortableTable {
 
   handleSortableCell(event) {
     const cell = event.target.closest('[data-sortable="true"]');
-    if (!cell) return;
+    if (!cell) {return;}
 
     const { id, order } = cell.dataset;
     this.updateSort(id, order);
@@ -211,22 +211,22 @@ export default class SortableTable {
 
   sortOnClient() {
     switch (this.getSortedType) {
-      case 'number': {
-        this.sortNumber();
-        break;
-      }
+    case 'number': {
+      this.sortNumber();
+      break;
+    }
 
-      case 'string': {
-        this.sortString();
-        break;
-      }
+    case 'string': {
+      this.sortString();
+      break;
+    }
 
-      case 'custom': {
-        return;
-      }
+    case 'custom': {
+      return;
+    }
 
-      default:
-        throw new Error('sortType not found!');
+    default:
+      throw new Error('sortType not found!');
     }
   }
 

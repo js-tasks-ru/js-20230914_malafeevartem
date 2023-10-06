@@ -6,7 +6,7 @@ export default class SortableTable {
     data = [],
     sorted = {}
   } = {}) {
-    this.headerConfig = [...headersConfig];
+    this.headersConfig = [...headersConfig];
     this.data = [...data];
     this.sorted = {
       ...sorted,
@@ -14,30 +14,6 @@ export default class SortableTable {
     this.isSortLocally = true;
     this.render();
   }
-
-  get getData() { return this.data; }
-
-  set setData(data) { this.data = data; }
-
-  get getElement() { return this.element; }
-
-  set setElement(element) { this.element = element; }
-
-  get getSubElements() { return this.subElements; }
-
-  set setSubElements(elements) { this.subElements = elements; }
-
-  get getheadersConfig() { return this.headerConfig; }
-
-  get getSorted() { return this.sorted; }
-  
-  set setSorted(options) { this.sorted = options; }
-
-  get getSortedType() { return this.getConfigure(this.getSortedId).sortType; }
-
-  get getSortedId() { return this.getSorted.id; }
-
-  get getSortedOrder() { return this.getSorted.order; }
 
   render() {
     this.sort();
@@ -114,7 +90,7 @@ export default class SortableTable {
   }
 
   createHeaderRowTemplate() {
-    return this.getheadersConfig.reduce((row, configure) => {
+    return this.headersConfig.reduce((row, configure) => {
       return [...row, this.createHeaderCellTemplate(configure)];
     }, []).join('');
   }
@@ -134,15 +110,19 @@ export default class SortableTable {
   }
 
   isSorted(id) {
-    return this.getSortedId === id;
+    return this.sorted.id === id;
   }
 
   getDataOrder() {
-    return `data-order=${this.getSortedOrder}`;
+    return `data-order=${this.sorted.order}`;
+  }
+
+  getSortedType() { 
+    return this.getConfigure(this.sorted.id).sortType; 
   }
 
   createSortingTemplate(id) {
-    if (this.getSortedId === id) {
+    if (this.sorted.id === id) {
       return `
         <span data-element="arrow" class="sortable-table__sort-arrow">
           <span class="sort-arrow"></span>
@@ -154,7 +134,7 @@ export default class SortableTable {
   }
 
   createProductsTemplate() {
-    return this.getData
+    return this.data
       .reduce((products, product) => {
         return [...products, this.createProductTemplate(product)];
       }, [])
@@ -170,7 +150,7 @@ export default class SortableTable {
   }
 
   createCategoriesTemplate(product) {
-    return this.getheadersConfig
+    return this.headersConfig
       .reduce((categories, configure) => {
         return [...categories, this.createCategoryTemplate(product, configure)];
       }, [])
@@ -186,7 +166,7 @@ export default class SortableTable {
 
   handleSortableCell(event) {
     const cell = event.target.closest('[data-sortable="true"]');
-    if (!cell) {return;}
+    if (!cell) { return; }
 
     const { id, order } = cell.dataset;
     this.updateSort(id, order);
@@ -195,7 +175,7 @@ export default class SortableTable {
   }
 
   updateSort(id, order) {
-    this.setSorted = {
+    this.sorted = {
       id,
       order: order === 'desc' ? 'asc' : 'desc',
     };
@@ -210,23 +190,23 @@ export default class SortableTable {
   }
 
   sortOnClient() {
-    switch (this.getSortedType) {
-    case 'number': {
-      this.sortNumber();
-      break;
-    }
+    switch (this.getSortedType()) {
+      case 'number': {
+        this.sortNumber();
+        break;
+      }
 
-    case 'string': {
-      this.sortString();
-      break;
-    }
+      case 'string': {
+        this.sortString();
+        break;
+      }
 
-    case 'custom': {
-      return;
-    }
+      case 'custom': {
+        return;
+      }
 
-    default:
-      throw new Error('sortType not found!');
+      default:
+        throw new Error('sortType not found!');
     }
   }
 
@@ -235,25 +215,25 @@ export default class SortableTable {
   }
 
   sortNumber() {
-    this.getData
-      .sort((a, b) => this.getSortedOrder === 'asc'
-        ? a[this.getSortedId] - b[this.getSortedId]
-        : b[this.getSortedId] - a[this.getSortedId]
+    this.data
+      .sort((a, b) => this.sorted.order === 'asc'
+        ? a[this.sorted.id] - b[this.sorted.id]
+        : b[this.sorted.id] - a[this.sorted.id]
       );
   }
 
   sortString() {
     const options = [['ru', 'en'], { caseFirst: 'upper' }];
-    this.getData
-      .sort((a, b) => this.getSortedOrder === 'asc'
-        ? a[this.getSortedId].localeCompare(b[this.getSortedId], ...options)
-        : b[this.getSortedId].localeCompare(a[this.getSortedId], ...options)
+    this.data
+      .sort((a, b) => this.sorted.order === 'asc'
+        ? a[this.sorted.id].localeCompare(b[this.sorted.id], ...options)
+        : b[this.sorted.id].localeCompare(a[this.sorted.id], ...options)
       );
   }
 
   selectSubElements() {
-    return { 
-      body: this.getElement.querySelector('[data-element=body]'),
+    return {
+      body: this.element.querySelector('[data-element=body]'),
       header: {
         children: this.element.querySelector('[data-element="header"]').children,
       }
@@ -261,7 +241,7 @@ export default class SortableTable {
   }
 
   getConfigure(field) {
-    return this.getheadersConfig.find((configure) => field === configure.id);
+    return this.headersConfig.find((configure) => field === configure.id);
   }
 
   update() {
@@ -273,13 +253,13 @@ export default class SortableTable {
 
   destroy() {
     this.remove();
-    this.setElement = null;
-    this.setSubElements = null;
+    this.element = null;
+    this.subElements = null;
   }
 
   remove() {
-    if (this.getElement) {
-      this.getElement.remove();
+    if (this.element) {
+      this.element.remove();
     }
   }
 }

@@ -9,32 +9,9 @@ class Tooltip {
     }
   }
 
-  render(message) {
-    this.element.textContent = message;
-    document.body.append(this.element);
-  }
-
-  handleOver(event) {
-    if (event.target.dataset.tooltip) {
-      const message = event.target.dataset.tooltip;
-      this.render(message);
-    }
-  }
-
-  handleOut(event) {
-    if (event.target.dataset.tooltip) {
-      this.remove();
-    }
-  }
-
-  handleMouseMove(event) {
-    if (document.querySelector('.tooltip')) {
-      const gap = 10;
-      const x = event.pageX + gap;
-      const y = event.pageY + gap;
-      this.element.style.left = `${x}px`;
-      this.element.style.top = `${y}px`;
-    }
+  initialize() {
+    this.element = this.createTooltipElement();
+    this.createListeners();
   }
 
   createTooltipElement() {
@@ -43,11 +20,44 @@ class Tooltip {
     return element;
   }
 
-  initialize() {
-    this.element = this.createTooltipElement();
-    document.addEventListener('mousemove', this.handleMouseMove.bind(this));
-    document.addEventListener('pointerover', this.handleOver.bind(this));
-    document.addEventListener('pointerout', this.handleOut.bind(this));
+  createListeners() {
+    document.addEventListener('mousemove', this.handleMouseMove);
+    document.addEventListener('pointerover', this.handlePointerOver);
+    document.addEventListener('pointerout', this.handlePointerOut);
+  }
+
+  removeListeners() {
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('pointerover', this.handlePointerOver);
+    document.removeEventListener('pointerout', this.handlePointerOut);
+  }
+
+  render(message) {
+    this.element.textContent = message;
+    document.body.append(this.element);
+  }
+
+  handlePointerOver = (event) => {
+    if (event.target.dataset.tooltip) {
+      const message = event.target.dataset.tooltip;
+      this.render(message);
+    }
+  }
+
+  handlePointerOut = (event) => {
+    if (event.target.dataset.tooltip) {
+      this.remove();
+    }
+  }
+
+  handleMouseMove = (event) => {
+    if (document.querySelector('.tooltip')) {
+      const gap = 10;
+      const x = event.pageX + gap;
+      const y = event.pageY + gap;
+      this.element.style.left = `${x}px`;
+      this.element.style.top = `${y}px`;
+    }
   }
 
   remove() {
@@ -58,10 +68,8 @@ class Tooltip {
 
   destroy() {
     this.remove();
+    this.removeListeners();
     this.element = null;
-    document.removeEventListener('mousemove', this.handleMouseMove.bind(this));
-    document.removeEventListener('pointerover', this.handleOver.bind(this));
-    document.removeEventListener('pointerout', this.handleOut.bind(this));
   }
 }
 

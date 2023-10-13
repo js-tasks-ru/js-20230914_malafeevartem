@@ -44,7 +44,7 @@ export default class DoubleSlider {
 
     handlePointerUp = () => {
       this.element.classList.remove('range-slider_dragging');
-      this.removeListener();
+      this.removeDocumentListener();
 
       this.element.dispatchEvent(new CustomEvent('range-select', {
         detail: { ...this.selected },
@@ -79,7 +79,7 @@ export default class DoubleSlider {
     initialize() {
       this.element = this.createTemplate();
       this.subElements = this.getSubElements();
-      this.createListeners();
+      this.createElementListeners();
       this.update();
     }
 
@@ -111,10 +111,16 @@ export default class DoubleSlider {
             }, {});
     }
 
-    createListeners() {
+    createElementListeners() {
       const { thumbLeft, thumbRight } = this.subElements;
       thumbLeft.addEventListener('pointerdown', this.handlePointerDown);
       thumbRight.addEventListener('pointerdown', this.handlePointerDown);
+    }
+
+    removeElemementListeners() {
+      const { thumbLeft, thumbRight } = this.subElements;
+      thumbLeft.removeEventListener('pointerdown', this.handlePointerDown);
+      thumbRight.removeEventListener('pointerdown', this.handlePointerDown);
     }
 
     update() {
@@ -140,13 +146,14 @@ export default class DoubleSlider {
       }
     }
 
-    removeListener() {
+    removeDocumentListener() {
       document.removeEventListener('pointermove', this.handlePointerMove);
       document.removeEventListener('pointerup', this.handlePointerUp);
     }
 
     destroy() {
       this.remove();
-      this.removeListener();
+      this.removeElemementListeners();
+      this.removeDocumentListener();
     }
 }

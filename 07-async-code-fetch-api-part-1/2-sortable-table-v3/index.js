@@ -10,7 +10,7 @@ export default class SortableTable {
 
   constructor(headerConfig = [], {
     url = '',
-    isSortLocally = true,
+    isSortLocally = false,
     sorted = {
       id: headerConfig.find(item => item.sortable).id,
       order: 'asc'
@@ -41,7 +41,7 @@ export default class SortableTable {
 
   createElement() {
     const element = document.createElement('div');
-    element.insertAdjacentHTML('afterbegin', this.getElementTemplate())
+    element.insertAdjacentHTML('afterbegin', this.getElementTemplate());
 
     return element.firstElementChild;
   }
@@ -68,7 +68,7 @@ export default class SortableTable {
 
   onSortableClick = async(event) => {
     const cell = event.target.closest('[data-sortable]');
-    if (!cell) return;
+    if (!cell) {return;}
     const { id, order } = cell.dataset;
     this.updateSorted(id, order);
     await this.sort();
@@ -82,7 +82,7 @@ export default class SortableTable {
       order: (order === 'desc') 
         ? 'asc' 
         : 'desc',
-    }
+    };
 
     this.sorted = { ...newSorted };
   }
@@ -244,35 +244,35 @@ export default class SortableTable {
   }
 
   async sort() {
-    const copyData = [...this.data];
     const { id, order } = this.sorted;
 
     if (this.isSortLocally) {
-      this.data = [...[], ...this.sortOnClient(copyData, id, order)];
-    } else {
-      this.data = [...[], ...await this.sortOnServer(copyData, id, order)];
+      this.data = [...[], ...this.sortOnClient(id, order)];
+    }
+
+    if (!this.isSortLocally) {
+      this.data = [...[], ...await this.sortOnServer(id, order)];
     }
   }
 
-  sortOnClient(data, id, order) {
+  sortOnClient(id, order) {
+    const copyData = [...this.data];
     switch (this.getSortedType(id)) {
-      case 'number': {
-        return this.sortNumber(data, id, order);
-        break;
-      }
+    case 'number': {
+      return this.sortNumber(copyData, id, order);
+    }
   
-      case 'string': {
-        return this.sortString(data, id, order);
-        break;
-      }
+    case 'string': {
+      return this.sortString(copyData, id, order);
+    }
   
-      case 'custom': {
-        return;
-      }
+    case 'custom': {
+      return;
+    }
   
-      default:
-        throw new Error('sortType not found!');
-      }
+    default:
+      throw new Error('sortType not found!');
+    }
   }
 
   sortNumber(data, id, order) {

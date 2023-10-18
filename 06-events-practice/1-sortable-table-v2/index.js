@@ -192,12 +192,12 @@ export default class SortableTable {
   sortOnClient() {
     switch (this.getSortedType()) {
     case 'number': {
-      this.sortNumber(data);
+      this.sortNumber();
       break;
     }
 
     case 'string': {
-      this.sortString(data);
+      this.sortString();
       break;
     }
 
@@ -208,6 +208,10 @@ export default class SortableTable {
     default:
       throw new Error('sortType not found!');
     }
+  }
+
+  sortOnServer() {
+    return;
   }
 
   sortNumber() {
